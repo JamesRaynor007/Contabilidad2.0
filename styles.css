@@ -1,0 +1,126 @@
+/* Estilo futurista con colores cyan, green, blue y grey */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #00ffff; /* Cyan */
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+section {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+}
+
+h2 {
+    color: #00ffcc; /* Greenish cyan */
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+input, select, button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+input {
+    background-color: #333;
+    color: #fff;
+    flex: 1;
+}
+
+select {
+    background-color: #333;
+    color: #fff;
+}
+
+button {
+    background-color: #00ffff;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #00cccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #444;
+}
+
+th {
+    background-color: #2a2a2a;
+    color: #00ffff;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #1e1e1e;
+}
+
+.summary-section p {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+/* Asegurar que la sección de transacciones esté alineada a la izquierda */
+.section-container, /* si usas esta clase en algún contenedor adicional */
+.table-section {
+  text-align: left;
+}
+
+/* También, si quieres que la cabecera y la tabla estén alineadas a la izquierda */
+.transactions-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start; /* en lugar de space-between */
+  margin-bottom: 10px;
+}
+
+/* Opcional: si quieres que los botones y otros elementos también estén alineados a la izquierda */
+.export-buttons {
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#transactionsTable {
+  width: 100%;
+  /* La tabla ya tiene width 100%, no necesita ajuste adicional */
+}

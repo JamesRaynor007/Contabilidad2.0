@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contabilidad Futurista</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Librerías para exportar -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    /* Encabezado */
+    header h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Sección de agregar registro */
+    .input-section {
+      margin-bottom: 30px;
+    }
+
+    .input-section h2 {
+      margin-bottom: 10px;
+    }
+
+    #entryForm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #entryForm label {
+      margin-right: 5px;
+    }
+
+    #entryForm input,
+    #entryForm select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #entryForm button {
+      padding: 8px 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #entryForm button:hover {
+      background-color: #45a049;
+    }
+
+    /* Filtros */
+    .filters-section {
+      margin-bottom: 30px;
+    }
+
+    .filters-section h2 {
+      margin-bottom: 10px;
+    }
+
+    /* Contenedor de filtros en línea */
+    .filters-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    /* Tabla y encabezado */
+    .table-section {
+      margin-bottom: 30px;
+    }
+
+    .transactions-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .transactions-header h2 {
+      margin: 0;
+    }
+
+    /* Botones de exportación y filtros */
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    #exportCsv,
+    #exportXlsx,
+    #exportPdf,
+    #downloadTemplate,
+    #loadTemplate {
+      padding: 8px 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    #exportCsv:hover,
+    #exportXlsx:hover,
+    #exportPdf:hover,
+    #downloadTemplate:hover,
+    #loadTemplate:hover {
+      background-color: #45a049;
+    }
+
+    /* Tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      position: relative;
+    }
+
+    th button {
+      margin-left: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Resumen */
+    .summary-section {
+      margin-top: 30px;
+    }
+
+    .summary-section h2 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <h1>Registro de Contabilidad</h1>
+  </header>
+
+  <!-- Sección para agregar registros -->
+  <section class="input-section">
+    <h2>Agregar Registro</h2>
+    <form id="entryForm">
+      <label for="date">Fecha:</label>
+      <input type="date" id="date" required />
+
+      <input type="number" id="amount" placeholder="Cantidad" required />
+
+      <select id="type" required>
+        <option value="" disabled selected>Tipo</option>
+        <option value="ingreso">Ingreso</option>
+        <option value="gasto">Gasto</option>
+      </select>
+
+      <input type="text" id="notes" placeholder="Notas (opcional)" />
+
+      <button type="submit">Agregar</button>
+    </form>
+  </section>
+
+  <!-- Filtros de Fecha, Mes y Año en línea -->
+  <section class="filters-section">
+    <h2>Filtros de Fecha y Mes</h2>
+    <div class="filters-line">
+      <div>
+        <label for="fechaDesde">Desde:</label>
+        <input type="date" id="fechaDesde" />
+      </div>
+      <div>
+        <label for="fechaHasta">Hasta:</label>
+        <input type="date" id="fechaHasta" />
+      </div>
+      <div>
+        <label for="mesFiltro">Mes:</label>
+        <select id="mesFiltro">
+          <option value="todos" selected>Todos</option>
+          <option value="01">Enero</option>
+          <option value="02">Febrero</option>
+          <option value="03">Marzo</option>
+          <option value="04">Abril</option>
+          <option value="05">Mayo</option>
+          <option value="06">Junio</option>
+          <option value="07">Julio</option>
+          <option value="08">Agosto</option>
+          <option value="09">Septiembre</option>
+          <option value="10">Octubre</option>
+          <option value="11">Noviembre</option>
+          <option value="12">Diciembre</option>
+        </select>
+      </div>
+      <!-- Nuevo filtro por año -->
+      <div>
+        <label for="añoFiltro">Año:</label>
+        <select id="añoFiltro">
+          <option value="todos" selected>Todos</option>
+          <!-- Opciones dinámicas desde JS -->
+        </select>
+      </div>
+    </div>
+ 
+
+   <!-- Resumen -->
+  </section>
+  <section
+<!class="summary-section">
+    <h2>Resumen</h2>
+    <p>Ingresos: <span id="totalIngresos">0</span></p>
+    <p>Gastos: <span id="totalGastos">0</span></p>
+    <p>Resultado: <span id="resultado">0</span></p>
+  </section>
+
+  <!-- Tabla de transacciones -->
+  <section class="table-section">
+    <div class="transactions-header">
+      <h2>Registro de Transacciones</h2>
+      <!-- Opcional: botones de ordenamiento -->
+      <div>
+        <!-- Aquí puedes agregar botones para ordenar si deseas -->
+      </div>
+      <!-- Botones de exportación y plantilla -->
+      <div class="export-buttons">
+        <button id="exportCsv">Exportar CSV</button>
+        <button id="exportXlsx">Exportar XLSX</button>
+        <button id="exportPdf">Exportar PDF</button>
+        <button id="downloadTemplate">Descargar Plantilla</button>
+        <button id="loadTemplate">Cargar Plantilla</button>
+      </div>
+      <!-- Filtro por tipo -->
+      <div>
+        <label for="filter" style="margin-right: 10px;">Filtrar:</label>
+        <select id="filter">
+          <option value="todos" selected>Todos</option>
+          <option value="ingresos">Solo Ingresos</option>
+          <option value="gastos">Solo Gastos</option>
+        </select>
+      </div>
+    </div>
+    <table id="transactionsTable">
+      <thead>
+        <tr>
+          <th>
+            Fecha
+            <button id="ordenFecha" title="Ordenar por fecha">↑↓</button>
+          </th>
+          <th>
+            Cantidad
+            <button id="ordenCantidad" title="Ordenar por cantidad">↑↓</button>
+          </th>
+          <th>
+            Tipo
+            <button id="ordenClasificacion" title="Ordenar por clasificación">↑↓</button>
+          </th>
+          <th>Notas
+            <button id="ordenDetalle" title="Ordenar por notas">↑↓</button>
+          </th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+ 
+
+  <script src="script.js"></script>
+</body>
+</html>
